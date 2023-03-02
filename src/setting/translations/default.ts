@@ -1,4 +1,4 @@
 export default {
-    _widgetLabel: 'Listen Selection Change',
-  }
-  
+  _widgetLabel: 'Selection change updated',
+  fieldLabel: 'Select a field',
+};

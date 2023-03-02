@@ -9,9 +9,7 @@
   "copyright": "",
   "license": "http://www.apache.org/licenses/LICENSE-2.0",
   "properties": {},
-  "translatedLocales": [
-    "en"
-  ],
+  "translatedLocales": ["en", "es"],
   "defaultSize": {
     "width": 400,
     "height": 400

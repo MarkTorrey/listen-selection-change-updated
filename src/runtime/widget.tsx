@@ -18,57 +18,93 @@
   A copy of the license is available in the repository's
   LICENSE file.
 */
-import { React, jsx, css, IMDataSourceInfo, DataSource, DataSourceStatus, FeatureLayerQueryParams, AllWidgetProps, DataSourceComponent, classNames } from 'jimu-core'
-import { Button } from 'jimu-ui'
-import { IMConfig } from '../config'
+import {
+  React,
+  jsx,
+  css,
+  IMDataSourceInfo,
+  DataSource,
+  DataSourceStatus,
+  FeatureLayerQueryParams,
+  AllWidgetProps,
+  DataSourceComponent,
+  classNames,
+} from 'jimu-core';
+import { Button } from 'jimu-ui';
+import { IMConfig } from '../config';
+
+import defaultMessages from './translations/default';
 
 /**
  * This widget shows how to listen to the selection change of a data source.
  */
-export default function Widget (props: AllWidgetProps<IMConfig>) {
+export default function Widget(props: AllWidgetProps<IMConfig>) {
   const isDsConfigured = () => {
     if (props.useDataSources && props.useDataSources.length === 1) {
-      return true
+      return true;
     }
-    return false
-  }
+    return false;
+  };
 
   const dataRender = (ds: DataSource, info: IMDataSourceInfo) => {
-    return <div className='record-list'>
-        {
-          ds && ds.getStatus() === DataSourceStatus.Loaded
-            ? ds.getRecords().map((r, i) => {
-              return <Button 
-                type='tertiary'
-                key={i} 
-                onClick={
-                  () => ds.selectRecordById(r.getId())
-                } 
-                className={classNames({ 'blue-border': ds.getSelectedRecordIds()?.includes(r.getId()) })}>
-                {r.getFieldValue(props.config.LabelField)}
-              </Button>
+    return (
+      <div className='record-list'>
+        {ds && ds.getStatus() === DataSourceStatus.Loaded
+          ? ds.getRecords().map((r, i) => {
+              return (
+                <Button
+                  type='tertiary'
+                  key={i}
+                  onClick={() => ds.selectRecordById(r.getId())}
+                  className={classNames({
+                    'blue-border': ds
+                      .getSelectedRecordIds()
+                      ?.includes(r.getId()),
+                  })}
+                >
+                  {r.getFieldValue(props.config.LabelField)}
+                </Button>
+              );
             })
-            : null
-        }
+          : null}
       </div>
-  }
+    );
+  };
 
   if (!isDsConfigured()) {
-    return <h3>
-      This widget shows how to listen to the selection change of a data source.
-      <br />
-      Please configure the data source.
-    </h3>
+    return (
+      <h3>
+        {props.intl.formatMessage({
+          id: 'widgetHeading',
+          defaultMessage: defaultMessages.widgetHeading,
+        })}
+        <br />
+        {props.intl.formatMessage({
+          id: 'connectDS',
+          defaultMessage: defaultMessages.connectDS,
+        })}
+      </h3>
+    );
   }
-  return <div className='widget-listen-selection-change' css={style}>
-    <h3>
-      This widget shows how to listen to the selection change of a data source.
-    </h3>
 
-    <DataSourceComponent useDataSource={props.useDataSources[0]} query={{ where: '1=1' } as FeatureLayerQueryParams} widgetId={props.id}>
-      {dataRender}
-    </DataSourceComponent>
-  </div>
+  return (
+    <div className='widget-listen-selection-change' css={style}>
+      <h3>
+        {props.intl.formatMessage({
+          id: 'widgetHeading',
+          defaultMessage: defaultMessages.widgetHeading,
+        })}
+      </h3>
+
+      <DataSourceComponent
+        useDataSource={props.useDataSources[0]}
+        query={{ where: '1=1' } as FeatureLayerQueryParams}
+        widgetId={props.id}
+      >
+        {dataRender}
+      </DataSourceComponent>
+    </div>
+  );
 }
 
 const style = css`
@@ -86,4 +122,4 @@ const style = css`
     height: calc(100% - 80px);
     overflow: auto;
   }
-`
+`;

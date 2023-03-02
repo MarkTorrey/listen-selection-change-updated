@@ -17,55 +17,80 @@
   A copy of the license is available in the repository's
   LICENSE file.
 */
-import { React, Immutable, UseDataSource, JimuFieldType, IMFieldSchema, DataSource, ImmutableArray, ImmutableObject } from 'jimu-core'
-import { AllWidgetSettingProps } from 'jimu-for-builder'
-import { IMConfig } from '../config'
-import { DataSourceSelector, AllDataSourceTypes, FieldSelector } from 'jimu-ui/advanced/data-source-selector'
-import { SettingRow, SettingSection } from 'jimu-ui/advanced/setting-components'
+import {
+  React,
+  Immutable,
+  UseDataSource,
+  JimuFieldType,
+  IMFieldSchema,
+  DataSource,
+  ImmutableArray,
+  ImmutableObject,
+} from 'jimu-core';
+import { AllWidgetSettingProps } from 'jimu-for-builder';
+import { IMConfig } from '../config';
+import {
+  DataSourceSelector,
+  AllDataSourceTypes,
+  FieldSelector,
+} from 'jimu-ui/advanced/data-source-selector';
+import {
+  SettingRow,
+  SettingSection,
+} from 'jimu-ui/advanced/setting-components';
 
-export default function Setting (props: AllWidgetSettingProps<IMConfig>) {
+import defaultMessages from './translations/default';
 
-  const { useState} = React
+export default function Setting(props: AllWidgetSettingProps<IMConfig>) {
+  const { useState } = React;
 
-  const [selField, setSelField] = useState<string>(props.config.LabelField)
+  const [selField, setSelField] = useState<string>(props.config.LabelField);
 
   const onToggleUseDataEnabled = (useDataSourcesEnabled: boolean) => {
     props.onSettingChange({
       id: props.id,
-      useDataSourcesEnabled
-    })
-  }
+      useDataSourcesEnabled,
+    });
+  };
 
   const onDataSourceChange = (useDataSources: UseDataSource[]) => {
     props.onSettingChange({
       id: props.id,
-      useDataSources: useDataSources
-    })
-  }
+      useDataSources: useDataSources,
+    });
+  };
 
-  const labelFieldDidChange = (allSelectedFields: IMFieldSchema[], ds: DataSource)=>{
+  const labelFieldDidChange = (
+    allSelectedFields: IMFieldSchema[],
+    ds: DataSource
+  ) => {
     props.onSettingChange({
       id: props.id,
-      config: props.config.set("LabelField", allSelectedFields[0].name)
+      config: props.config.set('LabelField', allSelectedFields[0].name),
     });
 
-    const fldName = allSelectedFields[0].name
-    setSelField(fldName)
-  }
+    const fldName = allSelectedFields[0].name;
+    setSelField(fldName);
+  };
 
-  return <div className='widget-setting-listen-selection-change p-2'>
+  return (
+    <div className='widget-setting-listen-selection-change p-2'>
+      <DataSourceSelector
+        types={Immutable([AllDataSourceTypes.FeatureLayer])}
+        useDataSources={props.useDataSources}
+        useDataSourcesEnabled={props.useDataSourcesEnabled}
+        onToggleUseDataEnabled={onToggleUseDataEnabled}
+        onChange={onDataSourceChange}
+        widgetId={props.id}
+      />
 
-    <DataSourceSelector
-      types={Immutable([AllDataSourceTypes.FeatureLayer])}
-      useDataSources={props.useDataSources}
-      useDataSourcesEnabled={props.useDataSourcesEnabled}
-      onToggleUseDataEnabled={onToggleUseDataEnabled}
-      onChange={onDataSourceChange}
-      widgetId={props.id}
-    />
-
-    {props.useDataSourcesEnabled &&
-      <SettingSection title={'Label field'} >
+      {props.useDataSourcesEnabled && (
+        <SettingSection
+          title={props.intl.formatMessage({
+            id: 'fieldLabel',
+            defaultMessage: defaultMessages.fieldLabel,
+          })}
+        >
           <SettingRow>
             <FieldSelector
               useDataSources={props.useDataSources}
@@ -76,10 +101,11 @@ export default function Setting (props: AllWidgetSettingProps<IMConfig>) {
               selectedFields={Immutable([selField])}
               widgetId={props.id}
               isSearchInputHidden={true}
-              isDataSourceDropDownHidden = {true}>
-            </FieldSelector>
+              isDataSourceDropDownHidden={true}
+            ></FieldSelector>
           </SettingRow>
-      </SettingSection>
-    }
-  </div>
+        </SettingSection>
+      )}
+    </div>
+  );
 }
