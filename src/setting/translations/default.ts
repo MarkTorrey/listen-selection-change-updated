@@ -1,4 +1,4 @@
 export default {
   _widgetLabel: 'Selection change updated',
-  fieldLabel: 'Select a field',
+  fieldLabel: 'Select a label field',
 };
